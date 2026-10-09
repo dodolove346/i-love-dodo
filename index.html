@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff5f7">
+<title>موعدنا؟ ❤️</title>
+<style>
+:root{--pink:#ff5d86;--pink2:#ff8eaa;--ink:#342634;--muted:#806c79;--cream:#fff8f6;--line:#f1dce4;--green:#317b61}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 5%,#ffe1e9 0,transparent 28%),radial-gradient(circle at 90% 90%,#ffe8d9 0,transparent 30%),linear-gradient(135deg,#fff9f7,#fff0f5);display:grid;place-items:center;padding:18px;overflow-x:hidden}
+button,input{font:inherit}
+.app{width:min(100%,520px);position:relative}
+.topline{display:flex;justify-content:space-between;align-items:center;margin:0 4px 12px;color:var(--muted);font-size:.88rem}
+.brand{font-weight:800;color:#a84c6b}
+.card{background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.9);box-shadow:0 18px 55px #7f3e5718;border-radius:28px;padding:clamp(22px,6vw,36px);backdrop-filter:blur(10px);min-height:480px;display:flex;flex-direction:column;justify-content:center;animation:pop .35s ease}
+@keyframes pop{from{opacity:0;transform:translateY(9px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.emoji{font-size:3.2rem;text-align:center;margin-bottom:12px;filter:drop-shadow(0 5px 8px #ff7f9a30)}
+h1,h2,p{text-align:center}
+h1{font-size:clamp(2rem,8vw,3rem);line-height:1.2;margin:0 0 12px;letter-spacing:-1px}
+h2{font-size:1.55rem;margin:0 0 12px}
+p{color:var(--muted);line-height:1.9;margin:0 0 22px}
+.highlight{color:var(--pink);font-weight:800}
+.buttons{display:grid;gap:11px;margin-top:8px}
+button{border:0;border-radius:16px;padding:14px 16px;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s;min-height:50px}
+button:active{transform:scale(.98)}
+.primary{background:linear-gradient(135deg,var(--pink),#ff789b);color:white;font-weight:800;box-shadow:0 8px 20px #ff5d8630}
+.primary:hover{box-shadow:0 10px 25px #ff5d8648;transform:translateY(-1px)}
+.choice{background:#fff9fb;border:1px solid var(--line);color:var(--ink);text-align:right;display:flex;align-items:center;gap:12px}
+.choice:hover{border-color:#ff9bb4;background:#fff0f4;transform:translateY(-1px)}
+.choice .ico{font-size:1.5rem;width:34px;text-align:center}
+.choice small{display:block;color:var(--muted);font-size:.82rem;margin-top:2px}
+.secondary{background:#f8edf1;color:#8a6173}
+.row{display:flex;gap:10px;margin-top:14px}
+.row button{flex:1}
+.back{background:transparent;color:var(--muted);padding:8px 0;min-height:auto;margin-top:14px}
+.pill{align-self:center;border-radius:999px;background:#fff0f4;color:#b34e6d;padding:7px 13px;font-size:.8rem;margin-bottom:17px}
+.quote{background:#fff3f6;border:1px dashed #ffc0d0;border-radius:18px;padding:15px;text-align:center;line-height:1.9;margin:10px 0 18px}
+.progress{height:5px;background:#f7e5eb;border-radius:99px;overflow:hidden;margin:0 4px 14px}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff9bb4,var(--pink));transition:width .3s}
+.footer{text-align:center;color:#ad8d9c;font-size:.8rem;margin-top:15px}
+.hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1}
+.heart{position:absolute;bottom:-35px;opacity:.55;animation:float 8s linear infinite;font-size:20px}
+@keyframes float{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:#fffafd;color:var(--ink);outline:none;margin:6px 0 14px}
+input:focus{border-color:var(--pink2);box-shadow:0 0 0 3px #ff8eaa20}
+.summary{text-align:right;background:#fff8fa;border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:8px 0 16px;line-height:2}
+.summary strong{color:#b84f70}
+.confetti{font-size:1.4rem;letter-spacing:6px;text-align:center;margin:4px 0 15px}
+@media(max-width:390px){body{padding:11px}.card{min-height:460px;padding:22px 18px;border-radius:23px}.emoji{font-size:2.7rem}h2{font-size:1.35rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts"></div>
+<main class="app">
+  <div class="topline"><span class="brand">♡ موعدنا؟</span><span id="stepLabel">مهمّة رومانسية سرّية بين المهندس ودكتورته</span></div>
+  <div class="progress"><span id="progress"></span></div>
+  <section class="card" id="screen" aria-live="polite"></section>
+  <div class="footer">مصنوع بحب واحترافية 😂❤️</div>
+</main>
+<script>
+const screen = document.getElementById('screen');
+const progress = document.getElementById('progress');
+const stepLabel = document.getElementById('stepLabel');
+const state = {place:'',food:'',budget:'',day:'',time:'',extra:''};
+let historyStack = [];
+const places = [
+  {id:'restaurant',icon:'🍽️',name:'مطعم',desc:'اهم اشي الاكل عندك ف ممكن تختاريه اتوقع'},
+  {id:'cafe',icon:'☕',name:'كافيه',desc:'ارجيلة ليمون ونعنع مع كاستين برتقال طبيعي'},
+  {id:'cinema',icon:'🎬',name:'سينما',desc:'نروح على exit اتفرج عليكي وانتي تعيطي'},
+  {id:'walk',icon:'🌳',name:'تمشاية حلوة',desc:'نتمشى ونعمل شوفينج لانك مصرفجية بزيادة بزبطش شوبينج'},
+  {id:'sea',icon:'🌅',name:'مكان فيه غروب',desc:'منظر حلو ونتصور صور حلوة انا واميرتي '},
+  {id:'surprise',icon:'🎁',name:'إنتي اختاري المفاجأة',desc:'هاد الخيار عشان اميرتي تحكي وتختار ايش بدها ❤️'}
+];
+const foods = [
+  {icon:'🌯',name:'شاورما',desc:'خيار جميل خصوصا اذا كانت باشكا'},
+  {icon:'🍕',name:'بيتزا',desc:'بما اني بحبهاش تختاريهاش'},
+  {icon:'🍔',name:'برغر',desc:'اذا من ابو ال 9 موافق'},
+  {icon:'🍝',name:'باستا',desc:'حطيتها عشان اعمل حالي مثقف بس بعرفش شو بتشتغل هاي'},
+  {icon:'🍰',name:'ارجيلة وقهوة الي',desc:'يعني اخف ميزانية'},
+  {icon:'🤷',name:'إنتي اختاري',desc:'برضو عشان اميرتي تختار وعالاغلب انا موافق'}
+];
+const jokes = {
+  restaurant:'مطعم؟ شكلي رح ابيع كلية معناتو يا دود بس يلا فداكي برضو 😂',
+  cafe:'كافيه؟ خلص ممتاز مش غلط منطلب ارجيلة ليمون ونعنع ومنارجل واتفرج عليكي واحمد ربنا عليكي ☕❤️',
+  cinema:'exit ? تمام بس بديش تعيطي خوف المرة 😂',
+  walk:'خلص عالاكيد رح ابيع كلية معناتو 😂',
+  sea:'مش غلط خيارك جيد جدا حبيبتي بس لازم نتجوز بالاول  📸',
+  surprise:'مفاجأة؟ بتعرفيني فاشل بالمفاجات بس يلا اتحملي خلص 😂'
+};
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function go(render){historyStack.push(renderCurrent);render();}
+let renderCurrent = welcome;
+function show(html,step=1,label='مهمّة رومانسية سرّية'){
+  screen.innerHTML=html; stepLabel.textContent=label; progress.style.width=(step/5*100)+'%';
+  screen.style.animation='none'; void screen.offsetWidth; screen.style.animation='';
+}
+function button(text,fn,cls='primary'){return `<button class="${cls}" data-action="${fn}">${text}</button>`}
+function choices(items,fn){return `<div class="buttons">${items.map((x,i)=>`<button class="choice" data-pick="${fn}" data-index="${i}"><span class="ico">${x.icon}</span><span><b>${x.name}</b>${x.desc?`<small>${x.desc}</small>`:''}</span></button>`).join('')}</div>`}
+function bind(){
+ screen.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>actions[b.dataset.action]?.()));
+ screen.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>pickers[b.dataset.pick]?.(+b.dataset.index)));
+ screen.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',back));
+}
+function render(fn){renderCurrent=fn;fn();bind();}
+function back(){const prev=historyStack.pop();if(prev)render(prev);}
+function next(fn){historyStack.push(renderCurrent);render(fn);}
+function welcome(){
+ show(`<div class="emoji">💌</div><div class="pill">دعوة رسمية جدًا من المهندس للدكتورة دانية</div><h1>موعدنا؟ <span class="highlight">❤️</span></h1><p>عندي سوال صغير حبيبتي بس جوابه رح يكون جميل<br><b>بتوافقي تطلعي معي ديت؟</b></p><div class="buttons">${button('آه طبعًا! ❤️','yes')}${button('حسب… شو الخطة؟ 👀','maybe','choice')}${button('لازم أشوف جدول أعمالي 😂','tease','choice')}</div>`);
+}
+function reaction(type){
+ const data={
+ yes:['🥹','يا سلام! هيك بلّشنا صح ❤️','هسا بنخطط لأحلى طلعة… جهّزي حالك للقرارات الحلوة متلك'],
+ maybe:['🕵️','سوال جميل جدا يا دودو الخطة انه نطلع واصفن بعيونك الحلوين واعيش معك يوم حلو متلك 😌'],
+ tease:['📅','تمام حبيبتي ابعتيلي رقم السكرتيرة تبعتك عشان انسق معها مواعيد فضاوتك ❤️']
+ };
+ const d=data[type];
+ show(`<div class="emoji">${d[0]}</div><h2>${d[1]}</h2><p>${d[2]}</p>${button('خلص موافقة، كمّل ❤️','place')}${button(' خليني اعمل حالي صعبة وذكية 😏','place','choice')}`,1);
+}
+function choosePlace(){
+ show(`<div class="emoji">🗺️</div><h2>طيب يا اميرتي المهم وين بدنا نروح ؟</h2><p>اختاري المكان والزمان وانا جاهز يروحي 😂</p>${choices(places,'place')}${button('رجوع','back','back')}`,2,'اختيار الوجهة');
+}
+function afterPlace(){
+ const p=places.find(x=>x.id===state.place);
+ show(`<div class="emoji">${p.icon}</div><h2>${p.name}؟ 😍</h2><div class="quote">${jokes[state.place]}</div><p>حلو! هلا ننتقل لاهم اشي بحياتك وهو الاكل 😂</p>${button('يلا نختار الأكل 🍕','food')}${button('غيّرت رأيي، خلينا نختار مكان ثاني','place','choice')}`,2,'الوجهة المختارة');
+}
+function chooseFood(){
+ show(`<div class="emoji">🤤</div><h2>شو بدنا ناكل؟</h2><p>اختاري اشي رخيص الوضع بتحملش مزح 😂</p>${choices(foods,'food')}${button('رجوع','back','back')}`,3,'اجتماع الطوارئ: الأكل');
+}
+function afterFood(){
+ const f=foods[state.food];
+ let line = state.food===0?'شاورما ؟ طيب موافق بس تكون من عند مستر بيكر 😂':state.food===1?'بحبهاش صراحة يدودو بس عشانك مستعد عادي 🍕':state.food===2?'برغر؟ ماشي بس اذا من ابو ال 9 😂':state.food===3?'باستا؟ يزم بحكيلك بعرفش ايش هاد بدك تفضحينا ؟ اندومي يعني هو ؟ 😂':state.food===4?'قهوة وحلو وارجيلة؟ قرار اقتصادي وجميل الا اذا الحلو غالي 😭':'اختيارك على راسي، حتى لو اخترتي خيار مش موجود بالقائمة 😂';
+ show(`<div class="emoji">${f.icon}</div><h2>${f.name}؟ اتفقنا مبدئيًا 😌</h2><div class="quote">${line}</div><p>بس خلينا نكون واقعيين شوي… شو وضع الميزانية؟</p>${button('ميزانية خفيفة ولطيفة 💸','budget')}${button('خلينا نعيش اللحظة وبعدين منشوف 😂','budget','choice')}`,3,'تم اختيار الأكل');
+}
+function chooseBudget(){
+ const opts=[{icon:'🪙',name:'اقتصادي',desc:'المهم القعدة الحلوة، مش الفاتورة'},{icon:'💳',name:'متوسط',desc:'نتبسط بدون ما نبيع الكلية'},{icon:'👑',name:'اليوم يومنا',desc:'بس بدون ما نبالغ انا مش مليونير'}];
+ show(`<div class="emoji">💸</div><h2>خلينا نضبط الميزانية</h2><p>والله الحب غالي يدودو 😂</p>${choices(opts,'budget')}${button('رجوع','back','back')}`,4,'قسم الحسابات');
+}
+function chooseWhen(){
+ show(`<div class="emoji">🗓️</div><h2>آخر خطوتين وبنعلن الاتفاق!</h2><p>اختاري اليوم والوقت اللي بناسبك، والباقي علي يروحي ❤️</p><label for="day">اليوم المقترح</label><input id="day" type="date" min="${new Date().toISOString().slice(0,10)}" value="${state.day}"><label for="time">الوقت التقريبي</label><input id="time" type="time" value="${state.time||'17:00'}"><label for="extra">ملاحظة أو طلب خاص (اختياري)</label><input id="extra" type="text" maxlength="100" placeholder="مثلا بدي بوظة او شوكلاته 🍦" value="${escapeHTML(state.extra)}">${button('ثبّت الاتفاق المبدئي ❤️','finish')}${button('رجوع','back','back')}`,4,'تحديد الموعد');
+}
+function finish(){
+ state.day=document.getElementById('day').value;state.time=document.getElementById('time').value;state.extra=document.getElementById('extra').value.trim();
+ const p=places.find(x=>x.id===state.place), f=foods[state.food];
+ if(!state.day){const el=document.getElementById('day');el.focus();el.style.borderColor='#ff5d86';return;}
+ const d=new Date(state.day+'T00:00:00');const dayText=d.toLocaleDateString('ar-PS',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+ const timeText=state.time?new Date('2000-01-01T'+state.time).toLocaleTimeString('ar-PS',{hour:'numeric',minute:'2-digit'}):'بنتفق عليه';
+ show(`<div class="emoji">🥳</div><div class="confetti">✨ ❤️ ✨</div><h1 style="font-size:2.25rem">خلص اتفقنا! 🎉</h1><p>تم اعتماد الموعد والموافقة عليه 😂</p><div class="summary"><div>📍 <strong>المكان:</strong> ${p.name}</div><div>🍽️ <strong>الأكل:</strong> ${f.name}</div><div>💰 <strong>الميزانية:</strong> ${escapeHTML(state.budget)}</div><div>🗓️ <strong>اليوم:</strong> ${dayText}</div><div>⏰ <strong>الوقت:</strong> ${timeText}</div>${state.extra?`<div>💌 <strong>طلب خاص:</strong> ${escapeHTML(state.extra)}</div>`:''}</div><div class="quote">ملاحظة مهمة : ممنوع تحطي عطر وتلبسي قصير وتلبسي صندل 😂❤️<br><b>المهم أشوفك وننبسط سوا.</b></div>${button('ابعتيلي الاتفاق على واتساب 💬','whatsapp')}${button('نرجع نخطط من أول وجديد 🔄','restart','choice')}`,5,'تم الاتفاق بنجاح');
+}
+const actions={
+ yes:()=>{next(()=>reaction('yes'))},maybe:()=>{next(()=>reaction('maybe'))},tease:()=>{next(()=>reaction('tease'))},
+ place:()=>next(choosePlace),food:()=>next(chooseFood),budget:()=>next(chooseBudget),
+ back:back,finish,whatsapp:()=>{
+   const p=places.find(x=>x.id===state.place),f=foods[state.food];
+   const date=state.day?new Date(state.day+'T00:00:00').toLocaleDateString('ar-PS',{weekday:'long',month:'long',day:'numeric'}):'بنتفق عليه';
+   const msg=`موعدنا؟ ❤️\n📍 المكان: ${p.name}\n🍽️ الأكل: ${f.name}\n💰 الميزانية: ${state.budget}\n🗓️ اليوم: ${date}\n⏰ الوقت: ${state.time||'بنتفق عليه'}${state.extra?'\n💌 ملاحظة: '+state.extra:''}\n\nتم الاتفاق حبيبتي 😂❤️`;
+   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank','noopener');
+ },restart:()=>{Object.assign(state,{place:'',food:'',budget:'',day:'',time:'',extra:''});historyStack=[];render(welcome)}
+};
+const pickers={
+ place:i=>{state.place=places[i].id;next(afterPlace)},
+ food:i=>{state.food=i;next(afterFood)},
+ budget:i=>{state.budget=['اقتصادي 💸','متوسط 💳','اليوم يومنا 👑'][i];next(chooseWhen)}
+};
+function renderCurrentSafe(){render(welcome)}
+render(welcome);
+const heartBox=document.getElementById('hearts');
+for(let i=0;i<14;i++){const h=document.createElement('span');h.className='heart';h.textContent=['♡','♥','✦'][i%3];h.style.left=(Math.random()*100)+'%';h.style.animationDelay=(Math.random()*8)+'s';h.style.animationDuration=(7+Math.random()*6)+'s';heartBox.appendChild(h)}
+</script>
+</body>
+</html>
